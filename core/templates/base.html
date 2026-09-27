@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg" style="background-color: #2563EB;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'store:index' %}">Shop Quần Áo</a>
+            <ul class="navbar-nav">
+                {% for cat in categories %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'store:category_product_list' cat.cid %}">{{ cat.title }}</a>
+                </li>
+                {% endfor %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Đăng ký</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+{% block content %}{% endblock %}
+<footer style="background-color: #2563EB;">
+    <h3>Về shop</h3>
+    <a href="#">Thông tin</a>
+    <a href="#">Danh sách cửa hàng</a>
+    <a href="#">Tuyển dụng</a>
+    <a href="#">Liên hệ</a>
+    <h3>Trợ giúp</h3>
+    <a href="#">Câu hỏi thường gặp</a>
+    <a href="#">Hướng dẫn đổi & trả hàng</a>
+    <a href="#">Chính sách bảo mật</a>
+    <h4>Miễn phí giao hàng cho mọi đơn hàng online nhận tại cửa hàng hoặc đơn hàng từ 500.000đ trở lên.</h4>
+    <p>© Kim Chí Bảo & Trần Tuấn Minh</p>
+</footer>
+</body>
+</html>
