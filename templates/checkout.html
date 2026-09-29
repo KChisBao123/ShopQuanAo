@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Thanh Toán - Shop Quần Áo{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h3 class="fw-bold mb-4">Thông Tin Giao Hàng & Thanh Toán</h3>
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm p-4 rounded-3">
+                <form method="POST" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Họ và tên</label>
+                        <input type="text" class="form-control" name="name" required placeholder="Nguyễn Văn A">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Số điện thoại</label>
+                        <input type="tel" class="form-control" name="phone" required placeholder="0901234567">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Địa chỉ nhận hàng</label>
+                        <textarea class="form-control" name="address" rows="3" required placeholder="Số nhà, đường, quận/huyện..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 btn-lg rounded-3 fw-bold mt-3">Xác Nhận Đặt Hàng</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm p-4 rounded-3 bg-light">
+                <h5 class="fw-bold mb-3">Tóm Tắt Đơn Hàng</h5>
+                {% for item in cart_items %}
+                <div class="d-flex justify-content-between mb-2 small">
+                    <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+                    <span class="fw-bold">{{ item.subtotal|floatformat:0 }} đ</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between fs-5 fw-bold">
+                    <span>Tổng tiền:</span>
+                    <span class="text-primary">{{ total_price|floatformat:0 }} đ</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

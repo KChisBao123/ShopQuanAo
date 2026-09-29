@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Đặt Hàng Thành Công{% endblock %}
+
+{% block content %}
+<div class="container my-5 text-center py-5 bg-white rounded-3 shadow-sm">
+    <i class="bi bi-check-circle-fill text-success display-1 mb-3"></i>
+    <h2 class="fw-bold text-success mb-3">Đặt Hàng Thành Công!</h2>
+    <p class="text-muted mb-4">Cảm ơn bạn đã mua sắm. Đơn hàng của bạn đang được xử lý.</p>
+    <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg rounded-3">Tiếp Tục Mua Sắm</a>
+</div>
+{% endblock %}
