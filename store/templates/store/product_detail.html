@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Shop Quần Áo{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'product_list' %}" class="text-decoration-none">Sản phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5 bg-white p-4 rounded-3 shadow-sm">
+        <div class="col-md-6">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" class="img-fluid rounded-3 w-100 object-fit-cover" style="max-height: 500px;" alt="{{ product.name }}">
+            {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center rounded-3 text-muted" style="height: 400px;">
+                    <i class="bi bi-image fs-1"></i>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-6 d-flex flex-column justify-content-center">
+            {% if product.category %}
+                <span class="badge bg-secondary text-uppercase mb-2 style="width: fit-content;">{{ product.category.name }}</span>
+            {% endif %}
+            
+            <h2 class="fw-bold mb-3">{{ product.name }}</h2>
+            <h3 class="text-primary fw-bold mb-4">{{ product.price|floatformat:0 }} VNĐ</h3>
+            
+            <div class="mb-4">
+                <h6 class="fw-bold text-uppercase text-muted small">Mô tả sản phẩm:</h6>
+                <p class="text-secondary line-height-lg">
+                    {% if product.description %}
+                        {{ product.description|linebreaks }}
+                    {% else %}
+                        Chưa có mô tả cho sản phẩm này.
+                    {% endif %}
+                </p>
+            </div>
+
+            <!-- Form thêm vào giỏ hàng -->
+            <form action="{% url 'cart' %}" method="POST" class="mt-auto">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-auto">
+                        <label for="quantity" class="col-form-label fw-bold">Số lượng:</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="number" id="quantity" name="quantity" class="form-control text-center" value="1" min="1" max="99" style="width: 80px;">
+                    </div>
+                </div>
+                <div class="d-grid gap-2 d-md-block">
+                    <button type="submit" class="btn btn-primary btn-lg px-4 me-md-2 rounded-3">
+                        <i class="bi bi-cart-plus me-2"></i>Thêm vào giỏ hàng
+                    </button>
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-secondary btn-lg px-4 rounded-3">Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

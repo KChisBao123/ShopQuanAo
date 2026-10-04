@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Giỏ Hàng - Shop Quần Áo{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h3 class="fw-bold mb-4"><i class="bi bi-cart3 me-2"></i>Giỏ Hàng Của Bạn</h3>
+
+    {% if cart_items %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3 p-3">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Giá</th>
+                                <th class="text-center">Số lượng</th>
+                                <th>Tổng</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        {% if item.product.image %}
+                                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 60px; height: 60px; object-fit: cover;" class="rounded-2">
+                                        {% else %}
+                                            <div class="bg-light rounded-2 d-flex align-items-center justify-content-center text-muted" style="width: 60px; height: 60px;">
+                                                <i class="bi bi-image"></i>
+                                            </div>
+                                        {% endif %}
+                                        <span class="fw-bold text-dark">{{ item.product.name }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ item.product.price|floatformat:0 }} đ</td>
+                                <td class="text-center">{{ item.quantity }}</td>
+                                <td class="fw-bold text-primary">{{ item.subtotal|floatformat:0 }} đ</td>
+                                <td>
+                                    <a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-sm btn-outline-danger border-0">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-3 p-4">
+                <h5 class="fw-bold mb-3">Tóm Tắt Đơn Hàng</h5>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-secondary">Tạm tính:</span>
+                    <span class="fw-bold">{{ total_price|floatformat:0 }} đ</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-secondary">Phí vận chuyển:</span>
+                    <span class="text-success fw-bold">Miễn phí</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between mb-4 fs-5">
+                    <span class="fw-bold">Tổng cộng:</span>
+                    <span class="fw-bold text-primary">{{ total_price|floatformat:0 }} đ</span>
+                </div>
+                <a href="{% url 'checkout' %}" class="btn btn-primary w-100 btn-lg rounded-3 fw-bold">
+                    Thanh Toán
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5 bg-white rounded-3 shadow-sm">
+        <i class="bi bi-cart-x fs-1 text-muted d-block mb-3"></i>
+        <h5>Giỏ hàng của bạn đang trống!</h5>
+        <p class="text-muted">Hãy chọn sản phẩm bạn yêu thích và thêm vào giỏ hàng ngay.</p>
+        <a href="{% url 'product_list' %}" class="btn btn-primary rounded-3 px-4 mt-2">Tiếp tục mua sắm</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

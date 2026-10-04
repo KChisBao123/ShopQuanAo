@@ -10,7 +10,7 @@ def home(request):
         'featured_products': featured_products,
         'categories': categories,
     }
-    return render(request, 'home.html', context)
+    return render(request, 'store/home.html', context)
 
 def product_list(request):
     products = Product.objects.all().order_by('-id')
