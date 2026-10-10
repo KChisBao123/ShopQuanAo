@@ -38,11 +38,11 @@ def product_list(request):
         'selected_category': selected_category,
         'query': query,
     }
-    return render(request, 'product_list.html', context)
+    return render(request, 'store/product_list.html', context)
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    return render(request, 'product_detail.html', {'product': product})
+    return render(request, 'store/product_detail.html', {'product': product})
 
 
 def cart(request):
@@ -79,7 +79,7 @@ def cart(request):
         'cart_items': cart_items,
         'total_price': total_price,
     }
-    return render(request, 'cart.html', context)
+    return render(request, 'store/cart.html', context)
 
 def remove_from_cart(request, product_id):
     cart = request.session.get('cart', {})
@@ -110,10 +110,10 @@ def checkout(request):
     if request.method == 'POST':
         # Dòng này sẽ xóa toàn bộ dữ liệu giỏ hàng lưu trong session, giỏ hàng sẽ trở về trạng thái rỗng sau khi thanh toán thành công
         request.session['cart'] = {} 
-        return render(request, 'order_success.html')
+        return render(request, 'store/order_success.html')
 
     context = {
         'cart_items': cart_items,
         'total_price': total_price,
     }
-    return render(request, 'checkout.html', context)
+    return render(request, 'store/checkout.html', context)
