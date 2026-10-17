@@ -1,17 +1,25 @@
-{% extends 'base.html' %}
+{% extends 'store/base.html' %}
 {% block title %}Thanh Toán - Shop Quần Áo{% endblock %}
 
 {% block content %}
 <div class="container my-5">
     <h3 class="fw-bold mb-4">Thông Tin Giao Hàng & Thanh Toán</h3>
-    <div class="row g-4">
-        <div class="col-md-7">
-            <div class="card border-0 shadow-sm p-4 rounded-3">
-                <form method="POST" action="{% url 'checkout' %}">
-                    {% csrf_token %}
+    
+    <form method="POST" action="{% url 'checkout' %}">
+        {% csrf_token %}
+        
+        <div class="row g-4">
+            <!-- Left Column: Shipping Info & Card Form -->
+            <div class="col-md-7">
+                <div class="card border-0 shadow-sm p-4 rounded-3 mb-4">
+                    <h5 class="fw-bold mb-3">Thông Tin Nhận Hàng</h5>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Họ và tên</label>
                         <input type="text" class="form-control" name="name" required placeholder="Nguyễn Văn A">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email (Nhận xác nhận đơn hàng)</label>
+                        <input type="email" class="form-control" name="email" required placeholder="nguyenvana@gmail.com">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Số điện thoại</label>
@@ -21,26 +29,87 @@
                         <label class="form-label fw-bold">Địa chỉ nhận hàng</label>
                         <textarea class="form-control" name="address" rows="3" required placeholder="Số nhà, đường, quận/huyện..."></textarea>
                     </div>
+                </div>
+
+                <!-- Form Nhập Thẻ Thanh Toán Trực Tiếp -->
+                <div class="card border-0 shadow-sm p-4 rounded-3" id="card-info-box" style="display: none;">
+                    <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-credit-card me-2"></i>Thông Tin Thẻ Thanh Toán</h5>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tên in trên thẻ (Cardholder Name)</label>
+                        <input type="text" class="form-control" name="card_name" placeholder="NGUYEN VAN A">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Số thẻ (Card Number)</label>
+                        <input type="text" class="form-control" name="card_number" placeholder="4111 2222 3333 4444" maxlength="19">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Ngày hết hạn (Expiry Date)</label>
+                            <input type="text" class="form-control" name="card_expiry" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Mã bảo mật (CVV)</label>
+                            <input type="password" class="form-control" name="card_cvv" placeholder="123" maxlength="3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Order Summary & Payment Choices -->
+            <div class="col-md-5">
+                <div class="card border-0 shadow-sm p-4 rounded-3 bg-light">
+                    <h5 class="fw-bold mb-3">Tóm Tắt Đơn Hàng</h5>
+                    {% for item in cart_items %}
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+                        <span class="fw-bold">{{ item.subtotal|floatformat:0 }} đ</span>
+                    </div>
+                    {% endfor %}
+                    <hr>
+                    <div class="d-flex justify-content-between fs-5 fw-bold mb-4">
+                        <span>Tổng tiền:</span>
+                        <span class="text-primary">{{ total_price|floatformat:0 }} đ</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Phương thức thanh toán</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="payment_method" value="cod" id="cod" checked>
+                            <label class="form-check-label" for="cod">💵 Thanh toán khi nhận hàng (COD)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" value="card" id="card_method">
+                            <label class="form-check-label" for="card_method">💳 Thanh toán bằng Thẻ Quốc Tế (Visa/MasterCard)</label>
+                        </div>
+                    </div>
+                    
                     <button type="submit" class="btn btn-primary w-100 btn-lg rounded-3 fw-bold mt-3">Xác Nhận Đặt Hàng</button>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-5">
-            <div class="card border-0 shadow-sm p-4 rounded-3 bg-light">
-                <h5 class="fw-bold mb-3">Tóm Tắt Đơn Hàng</h5>
-                {% for item in cart_items %}
-                <div class="d-flex justify-content-between mb-2 small">
-                    <span>{{ item.product.name }} (x{{ item.quantity }})</span>
-                    <span class="fw-bold">{{ item.subtotal|floatformat:0 }} đ</span>
-                </div>
-                {% endfor %}
-                <hr>
-                <div class="d-flex justify-content-between fs-5 fw-bold">
-                    <span>Tổng tiền:</span>
-                    <span class="text-primary">{{ total_price|floatformat:0 }} đ</span>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
+
+<!-- JavaScript bật/tắt khung nhập thẻ -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const codRadio = document.getElementById('cod');
+        const cardRadio = document.getElementById('card_method');
+        const cardBox = document.getElementById('card-info-box');
+        const cardInputs = cardBox.querySelectorAll('input');
+
+        function toggleCardFields() {
+            if (cardRadio.checked) {
+                cardBox.style.display = 'block';
+                cardInputs.forEach(input => input.required = true);
+            } else {
+                cardBox.style.display = 'none';
+                cardInputs.forEach(input => input.required = false);
+            }
+        }
+
+        codRadio.addEventListener('change', toggleCardFields);
+        cardRadio.addEventListener('change', toggleCardFields);
+    });
+</script>
 {% endblock %}

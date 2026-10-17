@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'store/base.html' %}
 {% load static %}
 
-{% block title %}{{ product.name }} - Shop Quần Áo{% endblock %}
+{% block title %}{{ product.title }} - Shop Quần Áo{% endblock %}
 
 {% block content %}
 <div class="container my-5">
@@ -9,14 +9,14 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Trang chủ</a></li>
             <li class="breadcrumb-item"><a href="{% url 'product_list' %}" class="text-decoration-none">Sản phẩm</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
         </ol>
     </nav>
 
     <div class="row g-5 bg-white p-4 rounded-3 shadow-sm">
         <div class="col-md-6">
             {% if product.image %}
-                <img src="{{ product.image.url }}" class="img-fluid rounded-3 w-100 object-fit-cover" style="max-height: 500px;" alt="{{ product.name }}">
+                <img src="{{ product.image.url }}" class="img-fluid rounded-3 w-100 object-fit-cover" style="max-height: 500px;" alt="{{ product.title }}">
             {% else %}
                 <div class="bg-light d-flex align-items-center justify-content-center rounded-3 text-muted" style="height: 400px;">
                     <i class="bi bi-image fs-1"></i>
@@ -26,21 +26,21 @@
 
         <div class="col-md-6 d-flex flex-column justify-content-center">
             {% if product.category %}
-                <span class="badge bg-secondary text-uppercase mb-2 style="width: fit-content;">{{ product.category.name }}</span>
+                <span class="badge bg-secondary text-uppercase mb-2" style="width: fit-content;">{{ product.category.title }}</span>
             {% endif %}
             
-            <h2 class="fw-bold mb-3">{{ product.name }}</h2>
+            <h2 class="fw-bold mb-3">{{ product.title }}</h2>
             <h3 class="text-primary fw-bold mb-4">{{ product.price|floatformat:0 }} VNĐ</h3>
             
             <div class="mb-4">
                 <h6 class="fw-bold text-uppercase text-muted small">Mô tả sản phẩm:</h6>
-                <p class="text-secondary line-height-lg">
+                <div class="text-secondary line-height-lg">
                     {% if product.description %}
                         {{ product.description|linebreaks }}
                     {% else %}
-                        Chưa có mô tả cho sản phẩm này.
+                        <p>Chưa có mô tả cho sản phẩm này.</p>
                     {% endif %}
-                </p>
+                </div>
             </div>
 
             <!-- Form thêm vào giỏ hàng -->
@@ -57,11 +57,42 @@
                 </div>
                 <div class="d-grid gap-2 d-md-block">
                     <button type="submit" class="btn btn-primary btn-lg px-4 me-md-2 rounded-3">
-                        <i class="bi bi-cart-plus me-2"></i>Thêm vào giỏ hàng
+                        <i class="bi bi-cart-plus me-2"></i>
                     </button>
+                    <a href="{% url 'add_to_wishlist' product.id %}" class="btn btn-outline-danger btn-lg rounded-3 fw-bold px-3">
+                        <i class="bi bi-heart-fill me-1"></i> 
+                    </a>
                     <a href="{% url 'product_list' %}" class="btn btn-outline-secondary btn-lg px-4 rounded-3">Quay lại</a>
                 </div>
             </form>
+
+            <hr class="my-4">
+
+            <!-- Social Share Buttons (Mục 5.5) -->
+            <div class="d-flex align-items-center gap-2">
+                <span class="fw-bold text-secondary me-2 small text-uppercase">Chia sẻ:</span>
+                
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                   target="_blank" 
+                   class="btn btn-outline-primary btn-sm rounded-circle px-2"
+                   title="Chia sẻ lên Facebook">
+                    <i class="bi bi-facebook"></i>
+                </a>
+
+                <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ product.title }}" 
+                   target="_blank" 
+                   class="btn btn-outline-dark btn-sm rounded-circle px-2"
+                   title="Chia sẻ lên Twitter">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+
+                <a href="https://pinterest.com/pin/create/button/?url={{ request.build_absolute_uri }}&description={{ product.title }}" 
+                   target="_blank" 
+                   class="btn btn-outline-danger btn-sm rounded-circle px-2"
+                   title="Chia sẻ lên Pinterest">
+                    <i class="bi bi-pinterest"></i>
+                </a>
+            </div>
         </div>
     </div>
 </div>
