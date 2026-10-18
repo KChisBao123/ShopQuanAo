@@ -33,6 +33,11 @@
                     <li class="nav-item">
                         <a class="nav-link fw-medium" href="{% url 'product_list' %}">Sản Phẩm</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{% url 'wishlist' %}" class="btn btn-outline-danger rounded-pill px-3">
+                            <i class="bi bi-heart me-1"></i>
+                        </a>
+                    </li>
                     <li class="nav-item ms-lg-2">
                         <a href="{% url 'cart' %}" class="btn btn-outline-primary position-relative rounded-pill px-3">
                             <i class="bi bi-cart3 me-1"></i> Giỏ hàng

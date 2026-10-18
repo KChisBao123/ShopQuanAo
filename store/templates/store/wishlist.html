@@ -1,0 +1,28 @@
+{% extends 'store/base.html' %}
+{% block title %}Danh Sách Yêu Thích{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h3 class="fw-bold mb-4">Sản Phẩm Yêu Thích</h3>
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-md-3">
+            <div class="card h-100 border-0 shadow-sm">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title fs-6">{{ product.name }}</h5>
+                    <p class="text-primary fw-bold mb-2">{{ product.price|floatformat:0 }} đ</p>
+                    <a href="{% url 'remove_from_wishlist' product.id %}" class="btn btn-outline-danger btn-sm">Bỏ yêu thích</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-muted">Bạn chưa thêm sản phẩm nào vào danh sách yêu thích.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

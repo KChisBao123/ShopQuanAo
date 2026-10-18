@@ -1,6 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
+import hashlib
+import hmac
+import urllib.parse
+from datetime import datetime
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, Category
 
 def home(request):
@@ -117,3 +121,68 @@ def checkout(request):
         'total_price': total_price,
     }
     return render(request, 'store/checkout.html', context)
+
+def wishlist(request):
+    wishlist_ids = request.session.get('wishlist', [])
+    products = Product.objects.filter(id__in=wishlist_ids)
+    return render(request, 'store/wishlist.html', {'products': products})
+
+
+def add_to_wishlist(request, product_id):
+    wishlist_ids = request.session.get('wishlist', [])
+    if product_id not in wishlist_ids:
+        wishlist_ids.append(product_id)
+        request.session['wishlist'] = wishlist_ids
+    return redirect('wishlist')
+
+
+def remove_from_wishlist(request, product_id):
+    wishlist_ids = request.session.get('wishlist', [])
+    if product_id in wishlist_ids:
+        wishlist_ids.remove(product_id)
+        request.session['wishlist'] = wishlist_ids
+    return redirect('wishlist')
+
+VNPAY_TMN_CODE = '2QX748P8'
+VNPAY_HASH_SECRET = 'A2N8M0K1L2P3Q4R5S6T7U8V9W0X1Y2Z3'
+VNPAY_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
+
+def create_vnpay_payment(request, order_id, amount):
+    """Hàm tạo URL chuyển hướng sang VNPay Sandbox"""
+    vnp_params = {
+        'vnp_Version': '2.1.0',
+        'vnp_Command': 'pay',
+        'vnp_TmnCode': VNPAY_TMN_CODE,
+        'vnp_Amount': int(amount * 100),  # VNPay tính đơn vị Đồng x 100
+        'vnp_CurrCode': 'VND',
+        'vnp_TxnRef': str(order_id),
+        'vnp_OrderInfo': f'Thanh toan don hang {order_id}',
+        'vnp_OrderType': 'billpayment',
+        'vnp_Locale': 'vn',
+        'vnp_ReturnUrl': request.build_absolute_uri('/vnpay-return/'),
+        'vnp_IpAddr': '127.0.0.1',
+        'vnp_CreateDate': datetime.now().strftime('%Y%m%d%H%M%S'),
+    }
+
+    # Sắp xếp các tham số theo alphabet
+    sorted_params = sorted(vnp_params.items())
+    query_string = urllib.parse.urlencode(sorted_params)
+    
+    # Tạo chuỗi Mã hóa Chữ ký an toàn (Secure Hash)
+    hash_value = hmac.new(
+        VNPAY_HASH_SECRET.encode('utf-8'),
+        query_string.encode('utf-8'),
+        hashlib.sha512
+    ).hexdigest()
+
+    return f"{VNPAY_URL}?{query_string}&vnp_SecureHash={hash_value}"
+
+def vnpay_return(request):
+    """View nhận phản hồi từ VNPay sau khi khách bấm thanh toán (Webhook/Callback 5.3)"""
+    vnp_response_code = request.GET.get('vnp_ResponseCode')
+    
+    if vnp_response_code == '00':  # Mã '00' nghĩa là Giao dịch Thành công
+        request.session['cart'] = {}  # Xóa giỏ hàng
+        return render(request, 'store/order_success.html', {'message': 'Thanh toán VNPay thành công!'})
+    else:
+        return redirect('checkout')
