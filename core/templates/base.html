@@ -24,9 +24,12 @@
                     <a class="nav-link" href="{% url 'cart' %}" style="color: white;"><i class="fa-solid fa-cart-shopping"></i></a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'wishlist' %}" style="color: white;"><i class="fa-solid fa-heart" style="color: red;"></i></a>
+                </li>
+                <li class="nav-item">
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
-                        <button type="submit" style="background: none; border: none; padding: 0; color: white;">Đăng xuất</button>
+                        <button type="submit" style="background: none; border: none; padding: 0; color: white; margin-top: 8px;">Đăng xuất</button>
                     </form>
                 </li>
                 {% else %}
@@ -38,18 +41,19 @@
         </div>
     </nav>
 {% block content %}{% endblock %}
-<footer style="background-color: #2563EB; color: white;">
-    <h3>Về shop</h3>
-    <a href="#" style="color: white; text-decoration: none;">Thông tin</a>
-    <a href="#" style="color: white; text-decoration: none;">Danh sách cửa hàng</a>
-    <a href="#" style="color: white; text-decoration: none;">Tuyển dụng</a>
-    <a href="#" style="color: white; text-decoration: none;">Liên hệ</a>
-    <h3>Trợ giúp</h3>
-    <a href="#" style="color: white; text-decoration: none;">Câu hỏi thường gặp</a>
-    <a href="#" style="color: white; text-decoration: none;">Hướng dẫn đổi & trả hàng</a>
-    <a href="#" style="color: white; text-decoration: none;">Chính sách bảo mật</a>
-    <h4>Miễn phí giao hàng cho mọi đơn hàng online nhận tại cửa hàng hoặc đơn hàng từ 500.000đ trở lên.</h4>
-    <p>© Kim Chí Bảo & Trần Tuấn Minh</p>
-</footer>
+<footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h5 class="fw-bold text-white">SHOP CLOTHING</h5>
+                    <p class="text-secondary mb-0">Chuyên cung cấp sản phẩm thời trang chất lượng, phong cách hiện đại cho bạn.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-secondary mb-1">© 2026 ShopQuanAo. All rights reserved.</p>
+                    <p class="text-secondary small mb-0">Thiết kế tích hợp Django Framework.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
